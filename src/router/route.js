@@ -1,5 +1,11 @@
-const express = require("express")
-const route = express.Router()
+
+const express = require('express');
+const router = express.Router()
+const userController = require("../controller/userController")
+
+const validation = require('../validation/validator')
+
+router.post("/register", validation.validUser,userController.createUser )
 
 
 
@@ -7,6 +13,4 @@ const route = express.Router()
 
 
 
-
-
-module.exports = route
+module.exports = router

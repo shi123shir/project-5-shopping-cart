@@ -10,10 +10,10 @@ app.use (multer().any())
 
 
 
-mongoose.connect("mongodb+srv://shishir1912-DB:F85ml8mUXi1MrEKV@cluster0.2ta5zuw.mongodb.net/group54Database",{
+mongoose.connect("mongodb+srv://Adesh:LnDEhxK0maoDwQD9@cluster0.r3pzigx.mongodb.net/Adesh1947=DB",{
     useNewUrlParser :true
 })
-.then(()=>console.log("mongoose is connected"))
+.then(()=>console.log("mongoDB is connected"))
 .catch((err)=>err)
 
 

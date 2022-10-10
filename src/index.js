@@ -10,7 +10,7 @@ app.use (multer().any())
 
 
 
-mongoose.connect("mongodb+srv://shishir1912-DB:F85ml8mUXi1MrEKV@cluster0.2ta5zuw.mongodb.net/group45Database",{
+mongoose.connect("mongodb+srv://shishir1912-DB:F85ml8mUXi1MrEKV@cluster0.2ta5zuw.mongodb.net/group54Database",{
     useNewUrlParser :true
 })
 .then(()=>console.log("mongoose is connected"))

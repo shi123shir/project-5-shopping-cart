@@ -11,11 +11,13 @@ const createUser= async function(req,res){
     try{
        
         let comingData= req.body
+        let password=comingData.password
          let profileImage=req.files
         const uploadedImage = await uploadFile(profileImage[0])
         comingData.profileImage = uploadedImage
 
-        
+        comingData.password = await bcrypt.hash(password, 10)
+
         let savedData = await userModel.create(comingData)
        return res.status(201).send({status:true,data:savedData})
 
@@ -47,8 +49,8 @@ try {
    
     if(!passwordregex.test(password))return res.status(400).send({status:false,message:"Password should be in valid fromat"})
 
-    // let actualPassword = await bcrypt.compare (password,user.password);
-    // if(!actualPassword)return res.status(401).send({status:false,message:"Incorrect password"})
+    let actualPassword = await bcrypt.compare (password,user.password);
+    if(!actualPassword)return res.status(401).send({status:false,message:"Incorrect password"})
 
     let token = jwt.sign({
         "userId": user._id,

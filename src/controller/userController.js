@@ -2,6 +2,7 @@ const userModel= require("../models/userModel")
 const jwt= require("jsonwebtoken")
 const { uploadFile } = require("../controller/aws")
 const bcrypt = require ("bcrypt")
+const mongoose = require("mongoose")
 
 
 
@@ -46,8 +47,8 @@ try {
    
     if(!passwordregex.test(password))return res.status(400).send({status:false,message:"Password should be in valid fromat"})
 
-    let actualPassword = await bcrypt.compare (password,user.password);
-    if(!actualPassword)return res.status(401).send({status:false,message:"Incorrect password"})
+    // let actualPassword = await bcrypt.compare (password,user.password);
+    // if(!actualPassword)return res.status(401).send({status:false,message:"Incorrect password"})
 
     let token = jwt.sign({
         "userId": user._id,
@@ -79,7 +80,6 @@ const getUserById = async function (req, res) {
         // checking if user exists.
         let getSpecificUser = await userModel.findOne({
             _id: userId,
-            isDeleted: false,
         });
 
         if (!getSpecificUser) {
@@ -89,7 +89,7 @@ const getUserById = async function (req, res) {
         }
         return res
             .status(200)
-            .send({ status: true, message: "success", data: details });
+            .send({ status: true, message: "success", data: getSpecificUser });
 
     } catch (error) {
         res.status(500).send({ status: false, err: error.message });

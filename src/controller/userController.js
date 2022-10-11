@@ -60,6 +60,42 @@ try {
     res.status(500).send({status:false,message:"server error",error:err})
 }
 }
+//========================================================================================================================================================================
+const getUserById = async function (req, res) {
+    try {
+        let userId = req.params.userId;
+
+        const isValidUserId = function (title) {
+            return mongoose.isValidObjectId(title)
+        }
+
+        // userId validation.
+        if (!isValidUserId(userId)) {
+            return res
+                .status(400)
+                .send({ status: false, message: `userId ${userId} is invalid` });
+        }
+
+        // checking if user exists.
+        let getSpecificUser = await userModel.findOne({
+            _id: userId,
+            isDeleted: false,
+        });
+
+        if (!getSpecificUser) {
+            return res
+                .status(404)
+                .send({ status: false, data: "No user  found" });
+        }
+        return res
+            .status(200)
+            .send({ status: true, message: "success", data: details });
+
+    } catch (error) {
+        res.status(500).send({ status: false, err: error.message });
+    }
+};
 
 
-module.exports={createUser,userLongin}
+
+module.exports={createUser,userLongin,getUserById}

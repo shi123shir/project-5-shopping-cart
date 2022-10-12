@@ -7,6 +7,7 @@ const {
   userUpdate,
 } = require("../controller/userController");
 const { validUser, validUpdate } = require("../validation/validator");
+const {createProduct} = require("../controller/produtController")
 
 const middl = require("../middleware/auth");
 
@@ -20,5 +21,7 @@ router.put(
   validUpdate,
   userUpdate
 );
+
+router.post ("/products", createProduct)
 
 module.exports = router;

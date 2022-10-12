@@ -8,7 +8,7 @@ const createUser = async function (req, res) {
   try {
     let comingData = req.body;
     let password = comingData.password;
-    let profileImage = req.files
+    let profileImage = req.files;
     const uploadedImage = await uploadFile(profileImage[0]);
     comingData.profileImage = uploadedImage;
 

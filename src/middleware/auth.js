@@ -12,7 +12,7 @@ exports.authentication = async function (req, res, next) {
     }
     //Verifying
     
-    let token = jwt.verify(tokenCheck, "project-5", (err, decode) => {
+    jwt.verify(tokenCheck, "project-5", (err, decode) => {
       if (err) {
         let msg =
           err.message == "jwt expired"

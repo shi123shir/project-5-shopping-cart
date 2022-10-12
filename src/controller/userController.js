@@ -8,7 +8,7 @@ const createUser = async function (req, res) {
   try {
     let comingData = req.body;
     let password = comingData.password;
-    let profileImage = req.files
+    let profileImage = req.files;
     const uploadedImage = await uploadFile(profileImage[0]);
     comingData.profileImage = uploadedImage;
 
@@ -101,11 +101,6 @@ const getUserById = async function (req, res) {
         .send({ status: false, message: `userId ${userId} is invalid` });
     }
 
-    //
-    if (req.params.userId != req.decode.toString()) {
-      return res.status(403).send({ status: false, data: "not authorized" });
-    }
-
     // checking if user exists.
     let getSpecificUser = await userModel.findOne({
       _id: userId,
@@ -131,13 +126,15 @@ const userUpdate = async function (req, res) {
     let data = req.body;
     let password = req.body.password;
     let profileImage = req.files;
-
     //bcrypt
     //if user select password
     if (req.body.password) {
       data.password = await bcrypt.hash(req.body.password, 10);
     }
-    if (profileImage) {
+    console.log(req.files);
+    //Error Solved
+    if (req.files.length != 0) {
+      console.log(req.files);
       profileImage = await uploadFile(profileImage[0]);
       data.profileImage = profileImage;
     }

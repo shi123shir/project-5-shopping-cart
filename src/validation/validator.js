@@ -192,11 +192,108 @@ const validUser = async function (req, res, next) {
 };
 
 const validUpdate = async function (req, res, next) {
+  let data = req.body;
+
+  let { address, email, phone, password } = data;
+
   if (Object.keys(req.body).length == 0) {
     return res
       .status(400)
-      .send({ status: false, msg: "not except empty request" });
+      .send({ status: false, msg: "Cant not Update empty Request" });
   }
+  //valid email or not
+  if (email) {
+    if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email))
+      return res
+        .status(400)
+        .send({ status: false, message: "Invalid Email Id" });
+  }
+
+  //valid number or not
+  if (phone) {
+    if (!/^[6-9]\d{9}$/.test(data.phone))
+      return res
+        .status(400)
+        .send({ status: false, message: "Wrong Mobile Number" });
+  }
+
+  //valid password or not
+  if (password) {
+    if (!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,15}$/.test(password))
+      return res.status(400).send({
+        status: false,
+        message:
+          "Atleat 1 uppercase, 1 lowercase, 1 numberic value , 1 special character and Length should be between 8 t0 14 for password!!!",
+      });
+  }
+  //if Address get selected
+  if (address) {
+    let { shipping, billing } = address;
+    if (shipping) {
+      let { street, city, pincode } = shipping;
+
+      if (!street) {
+        return res.status(400).send({
+          status: false,
+          message: "To change address Select shipping street",
+        });
+      }
+      if (!city) {
+        return res.status(400).send({
+          status: false,
+          message: "To change address Select shipping city",
+        });
+      }
+      if (!pincode) {
+        return res.status(400).send({
+          status: false,
+          message: "To change address Select shipping pincode",
+        });
+      }
+      //Regex for Pincode
+      if (!/^[1-9][0-9]{5}$/.test(pincode)) {
+        return res.status(400).send({ status: false, msg: "wrong pincode" });
+      }
+    } else {
+      return res.status(400).send({
+        status: false,
+        message: "To change address Select shipping street",
+      });
+    }
+    //billing
+    if (billing) {
+      let { street, city, pincode } = billing;
+
+      if (!street) {
+        return res.status(400).send({
+          status: false,
+          message: "To change address Select billing street",
+        });
+      }
+      if (!city) {
+        return res.status(400).send({
+          status: false,
+          message: "To change address Select billing city",
+        });
+      }
+      if (!pincode) {
+        return res.status(400).send({
+          status: false,
+          message: "To change address Select billing pincode",
+        });
+      }
+      //Regex for Pincode
+      if (!/^[1-9][0-9]{5}$/.test(pincode)) {
+        return res.status(400).send({ status: false, msg: "wrong pincode" });
+      }
+    } else {
+      return res.status(400).send({
+        status: false,
+        message: "To change address Select billing street",
+      });
+    }
+  }
+
   next();
 };
 

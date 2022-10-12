@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 exports.authentication = async function (req, res, next) {
   try {
     let tokenCheck = req.rawHeaders[1].replace("Bearer ", "");
-    console.log(tokenCheck);
+
     if (!tokenCheck) {
       return res
         .status(400)
@@ -23,6 +23,7 @@ exports.authentication = async function (req, res, next) {
       }
 
       req["decode"] = decode.userId;
+
       next();
     });
   } catch (err) {
@@ -38,7 +39,6 @@ exports.authentication = async function (req, res, next) {
 
 exports.authorization = async function (req, res, next) {
   try {
-   // console.log(typeof req.decode.toString(), typeof req.params.userId);
     if (req.params) {
       if (req.params.userId == req.decode.toString()) {
         next();
@@ -54,3 +54,5 @@ exports.authorization = async function (req, res, next) {
       .send({ status: false, msg: "Server Error authorization !!!" });
   }
 };
+
+

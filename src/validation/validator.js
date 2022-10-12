@@ -62,11 +62,11 @@ const validUser = async function (req, res, next) {
 
     //=========================== profile-Image ==================================================================================================================================
 
-    if(!profileImage)
+    if(profileImage.length==0)
     return res.status(400).send({status:false, msg:"please input profile_image"})
 
-    // if(!/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(profileImage))
-    // return res.status(400).send({status:false, msg:"invalid image format"})
+    if(!/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(profileImage[0].originalname))
+    return res.status(400).send({status:false, msg:"invalid image format"})
 
     //=========================== phone ==================================================================================================================================
 
@@ -223,7 +223,7 @@ const validUpdate = async function (req, res, next) {
       return res.status(400).send({
         status: false,
         message:
-          "Atleat 1 uppercase, 1 lowercase, 1 numberic value , 1 special character and Length should be between 8 t0 14 for password!!!",
+          "Atleat 1 uppercase, 1 lowercase, 1 numeric value , 1 special character and Length should be between 8 t0 14 for password!!!",
       });
   }
   //if Address get selected

@@ -1,5 +1,5 @@
 const productModel = require("../models/productModel")
-const { uploadFile } = require("../controller/aws");
+const { uploadFile } = require("./aws");
 
 
 const isValidType =  (value)=> {
@@ -23,28 +23,28 @@ try {
 
     if(!title)return res.status(400).send({status:false,message:"title is required"})
 
-    if(!isValidType(title))return res.status(400).send({status:false,message:"please enter title in string or title can't be empaty"})
+    if(!isValidType(title))return res.status(400).send({status:false,message:"please enter title in string or title can't be empty"})
 
     const duplicateTitle = await productModel.findOne({title:title})
     if(duplicateTitle)return res.status(400).send({status:false,message:"title already exist "})
 
-    if(!description)return res.status(400).send({status:false,message:"discription is required"})
+    if(!description)return res.status(400).send({status:false,message:"description is required"})
 
-    if(!isValidType(description))return res.status(400).send({status:false,message:"please enter description in string or description can't be empaty"})
+    if(!isValidType(description))return res.status(400).send({status:false,message:"please enter description in string or description can't be empty"})
 
     if(!price)return res.status(400).send({status:false,message:"price required"})
 
     // if(typeof price != "number") return res.status(400).send({status:false,message:"price should be in number"})
 
     if(currencyId || typeof currencyId == "string"){
-        if(!isValidType(currencyId))return res.status(400).send({status:false,message:"data can not be empaty"})
+        if(!isValidType(currencyId))return res.status(400).send({status:false,message:"data can not be empty"})
 
         if(!(/INR/.test(currencyId)))return res.status(400).send({status:false, message:"currencyId should be in INR format" })
     }else{
         data.currencyId = "INR"
     }
     if(currencyFormat||typeof currencyFormat == "string"){
-        if(!isValidType(currencyFormat)) return res.status(400).send({status:false,message:"currencyformat can not be empaty"})
+        if(!isValidType(currencyFormat)) return res.status(400).send({status:false,message:"currency Format can not be empty"})
 
         if(!(/₹/).test(currencyFormat))return res.status(400).send({status:false,message:'only rupee is supported'})
     }
@@ -53,7 +53,7 @@ try {
     }
 
     if(isFreeShipping){
-        if(typeof isFreeShipping !="boolean")return res.status(400).send({status :false,message:"isfreeshipping should be in boolean format - true or false only"})
+        if(typeof isFreeShipping !="boolean")return res.status(400).send({status :false,message:"is free shipping should be in boolean format - true or false only"})
     }
      
     if(files.length ==0) return res.status(400).send({status:false,message:"productImage is required"})
@@ -83,9 +83,9 @@ try {
         if( ! /^[1-9]\d{0,7}(?:\.\d{1,2})?$/.test(price))return res.status(400).send({status:false,message:"price should be valid format "})
      }
     
-     let productcreate = await productModel.create(data)
-     console.log(productcreate)
-     return res.status(201).send({status:true,message:"Success",data:productcreate})
+     let productCreate = await productModel.create(data)
+     console.log(productCreate)
+     return res.status(201).send({status:true,message:"Success",data:productCreate})
 
 } catch (err) {
     return res.status(500).send({status:false,error:err.message})

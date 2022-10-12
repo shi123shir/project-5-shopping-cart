@@ -9,12 +9,12 @@ const {
 const { validUser, validUpdate } = require("../validation/validator");
 const {createProduct} = require("../controller/produtController")
 
-const {authentication,autherization} = require("../middleware/auth");
+const {authentication,authorization} = require("../middleware/auth");
 
 router.post("/register", validUser, createUser);
 router.post("/login", userLongin);
 router.get("/user/:userId/profile", authentication, getUserById);
-router.put("/user/:userId/profile",authentication,autherization,validUpdate,userUpdate);
+router.put("/user/:userId/profile",authentication,authorization,validUpdate,userUpdate);
 router.post ("/products", createProduct)
 
 module.exports = router;

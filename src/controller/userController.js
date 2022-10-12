@@ -103,7 +103,7 @@ const getUserById = async function (req, res) {
 
     //
     if (req.params.userId != req.decode.toString()) {
-      return res.status(403).send({ status: false, data: "not autherized" });
+      return res.status(403).send({ status: false, data: "not authorized" });
     }
 
     // checking if user exists.

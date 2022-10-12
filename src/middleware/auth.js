@@ -36,7 +36,7 @@ exports.authentication = async function (req, res, next) {
 
 //Autherization
 
-exports.autherization = async function (req, res, next) {
+exports.authorization = async function (req, res, next) {
   try {
     if (req.params) {
       if (req.params.userId == req.decode.toString()) {
@@ -44,13 +44,13 @@ exports.autherization = async function (req, res, next) {
       } else {
         return res
           .status(403)
-          .send({ status: false, msg: "not Autherized User!!!" });
+          .send({ status: false, msg: "not Authorized User!!!" });
       }
     }
   } catch (err) {
     return res
       .status(500)
-      .send({ status: false, msg: "Server Error autherization !!!" });
+      .send({ status: false, msg: "Server Error authorization !!!" });
   }
 };
 

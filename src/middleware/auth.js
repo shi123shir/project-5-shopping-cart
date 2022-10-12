@@ -11,6 +11,7 @@ exports.authentication = async function (req, res, next) {
         .send({ status: false, msg: "Token is required in bearer" });
     }
     //Verifying
+    
     let token = jwt.verify(tokenCheck, "project-5", (err, decode) => {
       if (err) {
         let msg =
@@ -33,23 +34,23 @@ exports.authentication = async function (req, res, next) {
   }
 };
 
-//Autherization
+//Authorization
 
-exports.autherization = async function (req, res, next) {
+exports.authorization = async function (req, res, next) {
   try {
-    console.log(typeof req.decode.toString(), typeof req.params.userId);
+   // console.log(typeof req.decode.toString(), typeof req.params.userId);
     if (req.params) {
       if (req.params.userId == req.decode.toString()) {
         next();
       } else {
         return res
           .status(403)
-          .send({ status: false, msg: "not Autherized User!!!" });
+          .send({ status: false, msg: "not Authorized User!!!" });
       }
     }
   } catch (err) {
     return res
       .status(500)
-      .send({ status: false, msg: "Server Error autherization !!!" });
+      .send({ status: false, msg: "Server Error authorization !!!" });
   }
 };

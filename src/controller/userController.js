@@ -8,7 +8,7 @@ const createUser = async function (req, res) {
   try {
     let comingData = req.body;
     let password = comingData.password;
-    let profileImage = req.files;
+    let profileImage = req.files
     const uploadedImage = await uploadFile(profileImage[0]);
     comingData.profileImage = uploadedImage;
 
@@ -21,7 +21,7 @@ const createUser = async function (req, res) {
   }
 };
 
-const userLongin = async function (req, res) {
+const userLogin = async function (req, res) {
   const emailregex = /^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/;
   const passwordregex = /^(?!.\s)[A-Za-z\d@$#!%?&]{8,15}$/;
   try {
@@ -31,7 +31,7 @@ const userLongin = async function (req, res) {
     if (Object.keys(data).length === 0)
       return res
         .status(400)
-        .send({ satus: false, message: "Data is required to login" });
+        .send({ status: false, message: "Data is required to login" });
 
     if (!email)
       return res
@@ -57,7 +57,7 @@ const userLongin = async function (req, res) {
     if (!passwordregex.test(password))
       return res
         .status(400)
-        .send({ status: false, message: "Password should be in valid fromat" });
+        .send({ status: false, message: "Password should be in valid format" });
 
     let actualPassword = await bcrypt.compare(password, user.password);
     if (!actualPassword)
@@ -76,7 +76,7 @@ const userLongin = async function (req, res) {
 
     return res.status(200).send({
       status: true,
-      message: "user login successfull",
+      message: "user login successfully",
       data: { userId: user._id, token: token },
     });
   } catch (err) {
@@ -151,4 +151,4 @@ const userUpdate = async function (req, res) {
   }
 };
 
-module.exports = { createUser, userLongin, getUserById, userUpdate };
+module.exports = { createUser, userLogin, getUserById, userUpdate };

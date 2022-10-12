@@ -3,8 +3,8 @@ const userModel = require("../models/userModel");
 const validUser = async function (req, res, next) {
   try {
     let data = req.body;
-
-    let { fname, lname, email, profileImage, phone, password, address } = data;
+   let profileImage = req.files
+    let { fname, lname, email, phone, password, address } = data;
 
     if (Object.keys(data) == 0)
       return res
@@ -62,8 +62,11 @@ const validUser = async function (req, res, next) {
 
     //=========================== profile-Image ==================================================================================================================================
 
-    // if(!profileImage)
-    // return res.status(400).send({status:false, msg:"please input profile_image"})
+    if(!profileImage)
+    return res.status(400).send({status:false, msg:"please input profile_image"})
+
+    // if(!/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(profileImage))
+    // return res.status(400).send({status:false, msg:"invalid image format"})
 
     //=========================== phone ==================================================================================================================================
 
@@ -97,7 +100,7 @@ const validUser = async function (req, res, next) {
       return res.status(400).send({
         status: false,
         message:
-          "Atleat 1 uppercase, 1 lowercase, 1 numberic value , 1 special character and Length should be between 8 t0 14 for password!!!",
+          "Atleast 1 uppercase, 1 lowercase, 1 numeric value , 1 special character and Length should be between 8 t0 14 for password!!!",
       });
 
     //=========================== address ==================================================================================================================================
@@ -105,11 +108,11 @@ const validUser = async function (req, res, next) {
     if (!address)
       return res
         .status(400)
-        .send({ status: false, msg: "please input adress" });
+        .send({ status: false, msg: "please input address" });
 
     let { shipping, billing } = address;
 
-    // empty object value is truthy so is no key present in adress in taht case also its go into if
+    // empty object value is truthy so is no key present in address in that case also its go into if
 
     if (shipping) {
       let { street, city, pincode } = shipping;

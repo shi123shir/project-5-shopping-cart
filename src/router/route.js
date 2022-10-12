@@ -10,9 +10,9 @@ const { validUser, validUpdate } = require("../validation/validator");
 
 const middl = require("../middleware/auth");
 
-router.post("/register", createUser);
+router.post("/register", validUser, createUser);
 router.post("/login", userLongin);
-router.get("/user/:userId/profile", getUserById);
+router.get("/user/:userId/profile", middl.authentication, getUserById);
 router.put(
   "/user/:userId/profile",
   middl.authentication,

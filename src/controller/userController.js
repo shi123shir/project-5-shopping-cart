@@ -101,6 +101,11 @@ const getUserById = async function (req, res) {
         .send({ status: false, message: `userId ${userId} is invalid` });
     }
 
+    //
+    if (req.params.userId != req.decode.toString()) {
+      return res.status(403).send({ status: false, data: "not autherized" });
+    }
+
     // checking if user exists.
     let getSpecificUser = await userModel.findOne({
       _id: userId,
@@ -125,15 +130,17 @@ const userUpdate = async function (req, res) {
   try {
     let data = req.body;
     let password = req.body.password;
+    let profileImage = req.files;
 
     //bcrypt
     //if user select password
     if (req.body.password) {
       data.password = await bcrypt.hash(req.body.password, 10);
     }
-    // if (req.body.profileImage) {
-    //   data.profileImage = await uploadFile(req.files);
-    // }
+    if (profileImage) {
+      profileImage = await uploadFile(profileImage[0]);
+      data.profileImage = profileImage;
+    }
 
     //if that Field is present in Our User Body It will update
     let updatedData = await userModel.findOneAndUpdate(

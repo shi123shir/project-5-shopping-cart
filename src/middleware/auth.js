@@ -5,7 +5,7 @@ exports.authentication = async function (req, res, next) {
   try {
     let tokenCheck = req.rawHeaders[1].replace("Bearer ", "");
     console.log(tokenCheck);
-    if (tokenCheck == "undefined") {
+    if (!tokenCheck) {
       return res
         .status(400)
         .send({ status: false, msg: "Token is required in bearer" });
@@ -20,11 +20,10 @@ exports.authentication = async function (req, res, next) {
 
         return res.status(401).send({ status: false, msg: msg });
       }
-      console.log(decode);
-      req["decode"] = decode.userId;
-    });
 
-    next();
+      req["decode"] = decode.userId;
+      next();
+    });
   } catch (err) {
     return res.status(500).send({
       status: false,

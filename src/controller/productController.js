@@ -1,5 +1,6 @@
 const productModel = require("../models/productModel");
 const { uploadFile } = require("../controller/aws");
+const mongoose = require("mongoose");
 
 const isValidType = (value) => {
   if (typeof value !== "string" || value.trim().length === 0) {
@@ -154,7 +155,8 @@ const createProduct = async function (req, res) {
   }
 };
 
-//
+//===============================================================================Get By Filters======================================================================================
+
 //Get API
 const getProducts = async function (req, res) {
   try {
@@ -196,5 +198,80 @@ const getProducts = async function (req, res) {
       .send({ status: false, msg: "Server Error!!", err: err.message });
   }
 };
+//======================================================================Get by Id=============================================================================================
 
-module.exports = { createProduct, getProducts };
+
+    const getProductById = async function (req, res) {
+
+
+      try {
+        let productId = req.params.productId;
+
+        const isValidproductId = function (productId) {
+          return mongoose.isValidObjectId(productId)
+        };
+
+        // userId validation.
+        if (!isValidproductId(productId)) {
+          return res
+            .status(400)
+            .send({ status: false, message: `productId ${productId} is invalid` });
+        };
+
+        // checking if user exists.
+        let getSpecificProduct = await productModel.findOne({
+          _id: productId,
+          isDeleted: false,
+        });
+
+        if (!getSpecificProduct) {
+          return res.status(404).send({ status: false, data: "No product  found" });
+        }
+        return res
+          .status(200)
+          .send({ status: true, message: "success", data: getSpecificProduct });
+      } catch (error) {
+        res.status(500).send({ status: false, err: error.message });
+      }
+    };
+    //==================================================================Delete By Id ==========================================================================================
+
+    const deleteProductById = async function (req, res) {
+      try {
+        let productId = req.params.productId;
+        const isValidproductId = function (productId) {
+          return mongoose.isValidObjectId(productId);
+        };
+
+
+        // productId validation.
+        if (!isValidproductId(productId))
+          return res.status(400).send({ status: false, message: "Invalid productId" });
+
+        let savedData = await productModel.findById(productId);
+
+        //if it is already deleted
+        if (savedData.isDeleted)
+          return res.status(404).send({
+            status: false,
+            message: "Book not found",
+          });
+
+        // updating product
+        await productModel.findByIdAndUpdate(
+          savedData,
+          { $set: { isDeleted: true, deletedAt: new Date() } },
+          { new: true }
+        );
+
+        return res
+          .status(200)
+          .send({ status: true, message: "deleted successfully" });
+
+      } catch (error) {
+        res.status(500).send({ status: false, message: error.message });
+      }
+    };
+
+
+    module.exports = { createProduct, getProducts, getProductById, deleteProductById }

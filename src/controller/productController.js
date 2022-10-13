@@ -330,7 +330,13 @@ const getProducts = async function (req, res) {
 //     }
 
     //============================================================updateProduct==================================================//
-
+    const validName = (value) => {
+        if (typeof value !== "string" || value.trim().length === 0) {
+          return false;
+        }
+        return true;
+      };
+    
 const updateProduct = async function (req, res) {
     try {
 
@@ -349,7 +355,7 @@ const updateProduct = async function (req, res) {
         }
 
 
-        if (!isValidObjectId(productId)) {
+        if ((productId)==null) {
             return res.status(400).send({ status: false, message: "please enter valid productId" })
         }
         let checktitle = await productModel.findOne({ title: title })
@@ -462,7 +468,7 @@ const updateProduct = async function (req, res) {
     }
 }
 
-module.exports = { createProduct, updateProduct }
+// module.exports = { createProduct, updateProduct }
     //==================================================================Delete By Id ==========================================================================================
 
     const deleteProductById = async function (req, res) {

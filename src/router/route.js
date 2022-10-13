@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const {createUser,userLogin,getUserById,userUpdate,} = require("../controller/userController");
 const { validUser, validUpdate } = require("../validation/validator");
-const {createProduct,getProducts,getProductById,deleteProductById} = require("../controller/productController");
+const {createProduct,getProducts,getProductById,updateProduct, deleteProductById, updateProducts} = require("../controller/productController");
 const { authentication, authorization } = require("../middleware/auth");
 
 //===================================================================================================================================================
@@ -18,6 +18,8 @@ router.put("/user/:userId/profile",authentication,authorization,validUpdate,user
 router.post("/products", createProduct);                 //Create Product
 router.get("/products", getProducts);                    //Get by filters 
 router.get( "/products/:productId",getProductById)       //Get by Id
+router.put( "/products/:productId",updateProduct)       //update by Id
+
 router.delete("/products/:productId",deleteProductById)  //Delete by Id
 
 

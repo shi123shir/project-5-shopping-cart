@@ -38,7 +38,11 @@ const createProduct = async function (req, res) {
         .status(400)
         .send({ status: false, message: "title is required" });
 
-    if(!isValidType(title))return res.status(400).send({status:false,message:"please enter title in string or title can't be empty"})
+    if (!isValidType(title))
+      return res.status(400).send({
+        status: false,
+        message: "please enter title in string or title can't be empty",
+      });
 
     const duplicateTitle = await productModel.findOne({ title: title });
     if (duplicateTitle)
@@ -46,28 +50,40 @@ const createProduct = async function (req, res) {
         .status(400)
         .send({ status: false, message: "title already exist " });
 
-    if(!description)return res.status(400).send({status:false,message:"description is required"})
+    if (!description)
+      return res
+        .status(400)
+        .send({ status: false, message: "description is required" });
 
-    if(!isValidType(description))return res.status(400).send({status:false,message:"please enter description in string or description can't be empty"})
-     
+    if (!isValidType(description))
+      return res.status(400).send({
+        status: false,
+        message:
+          "please enter description in string or description can't be empty",
+      });
+
     if (!price)
       return res.status(400).send({ status: false, message: "price required" });
-    
-    if(currencyId || typeof currencyId == "string"){
-        if(!isValidType(currencyId))return res.status(400).send({status:false,message:"data can not be empty"})
 
-      if (!/INR/.test(currencyId))
+    if (currencyId || typeof currencyId == "string") {
+      if (!isValidType(currencyId))
         return res
           .status(400)
-          .send({
-            status: false,
-            message: "currencyId should be in INR format",
-          });
+          .send({ status: false, message: "data can not be empty" });
+
+      if (!/INR/.test(currencyId))
+        return res.status(400).send({
+          status: false,
+          message: "currencyId should be in INR format",
+        });
     } else {
       data.currencyId = "INR";
     }
-    if(currencyFormat||typeof currencyFormat == "string"){
-        if(!isValidType(currencyFormat)) return res.status(400).send({status:false,message:"currency Format can not be empty"})
+    if (currencyFormat || typeof currencyFormat == "string") {
+      if (!isValidType(currencyFormat))
+        return res
+          .status(400)
+          .send({ status: false, message: "currency Format can not be empty" });
 
       if (!/₹/.test(currencyFormat))
         return res
@@ -77,8 +93,13 @@ const createProduct = async function (req, res) {
       data.currencyFormat = "₹";
     }
 
-    if(isFreeShipping){
-        if(typeof isFreeShipping !="boolean")return res.status(400).send({status :false,message:"is free shipping should be in boolean format - true or false only"})
+    if (isFreeShipping) {
+      if (typeof Boolean(isFreeShipping) != "boolean")
+        return res.status(400).send({
+          status: false,
+          message:
+            "is free shipping should be in boolean format - true or false only",
+        });
     }
 
     if (files.length == 0)
@@ -91,12 +112,10 @@ const createProduct = async function (req, res) {
 
     if (style) {
       if (!isValidType(style))
-        return res
-          .status(400)
-          .send({
-            status: false,
-            message: "style should be a string or enter some data",
-          });
+        return res.status(400).send({
+          status: false,
+          message: "style should be a string or enter some data",
+        });
     }
 
     if (!availableSizes)
@@ -110,29 +129,72 @@ const createProduct = async function (req, res) {
 
       for (let i = 0; i < data.availableSizes.length; i++) {
         if (!isValidSize(data.availableSizes[i])) {
-          return res
-            .status(400)
-            .send({
-              status: false,
-              message:
-                "Size should be one of the-'S','XS','M','X','L','XXL','XL' ",
-            });
+          return res.status(400).send({
+            status: false,
+            message:
+              "Size should be one of the-'S','XS','M','X','L','XXL','XL' ",
+          });
         }
       }
     }
     if (installments) {
-      
-        if( ! /^[1-9]\d{0,7}(?:\.\d{1,2})?$/.test(price))return res.status(400).send({status:false,message:"price should be valid format "})
-     }
-    
-     let productCreate = await productModel.create(data)
-     console.log(productCreate)
-     return res.status(201).send({status:true,message:"Success",data:productCreate})
+      if (!/^[1-9]\d{0,7}(?:\.\d{1,2})?$/.test(price))
+        return res
+          .status(400)
+          .send({ status: false, message: "price should be valid format " });
+    }
 
-   
+    let productCreate = await productModel.create(data);
+    console.log(productCreate);
+    return res
+      .status(201)
+      .send({ status: true, message: "Success", data: productCreate });
   } catch (err) {
     return res.status(500).send({ status: false, error: err.message });
   }
 };
 
-module.exports = { createProduct };
+//
+//Get API
+const getProducts = async function (req, res) {
+  try {
+    let product = [{ isDeleted: false }];
+    if (req.query.size) {
+      product.push({ availableSizes: req.query.size });
+    }
+    if (req.query.name) {
+      product.push({ title: req.query.name });
+    }
+    if (req.query.price) {
+      product.push({ price: { $eq: req.query.price } });
+    }
+    if (req.query.priceGreaterThan) {
+      product.push(
+        { price: { $gt: req.query.priceGreaterThan } },
+        { $sort: { price: 1 } }
+      );
+    }
+    if (req.query.priceLessThan) {
+      product.push(
+        { price: { $lt: req.query.priceLessThan } },
+        { $sort: { price: -1 } }
+      );
+    }
+
+    console.log(product);
+
+    let findProducts = await productModel.find({ $and: product });
+
+    //if no data Found in DB
+    if (findProducts.length == 0) {
+      return res.status(200).send({ status: true, msg: "No Match" });
+    }
+    return res.status(200).send({ status: true, data: findProducts });
+  } catch (err) {
+    return res
+      .status(500)
+      .send({ status: false, msg: "Server Error!!", err: err.message });
+  }
+};
+
+module.exports = { createProduct, getProducts };

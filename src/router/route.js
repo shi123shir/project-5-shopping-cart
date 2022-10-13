@@ -7,7 +7,10 @@ const {
   userUpdate,
 } = require("../controller/userController");
 const { validUser, validUpdate } = require("../validation/validator");
-const { createProduct } = require("../controller/productController");
+const {
+  createProduct,
+  getProducts,
+} = require("../controller/productController");
 
 const { authentication, authorization } = require("../middleware/auth");
 
@@ -22,6 +25,7 @@ router.put(
   userUpdate
 );
 router.post("/products", createProduct);
+router.get("/products", getProducts);
 
 module.exports = router;
 

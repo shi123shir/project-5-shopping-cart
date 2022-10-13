@@ -49,12 +49,10 @@ const createProduct = async function (req, res) {
     if(!description)return res.status(400).send({status:false,message:"description is required"})
 
     if(!isValidType(description))return res.status(400).send({status:false,message:"please enter description in string or description can't be empty"})
-
+     
     if (!price)
       return res.status(400).send({ status: false, message: "price required" });
-
-    // if(typeof price != "number") return res.status(400).send({status:false,message:"price should be in number"})
-
+    
     if(currencyId || typeof currencyId == "string"){
         if(!isValidType(currencyId))return res.status(400).send({status:false,message:"data can not be empty"})
 
@@ -123,8 +121,7 @@ const createProduct = async function (req, res) {
       }
     }
     if (installments) {
-      // if(typeof installments != "number")return res.status(400).send({status:false,message:'installment should be in number'})
-
+      
         if( ! /^[1-9]\d{0,7}(?:\.\d{1,2})?$/.test(price))return res.status(400).send({status:false,message:"price should be valid format "})
      }
     

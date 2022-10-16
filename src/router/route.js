@@ -3,6 +3,7 @@ const router = express.Router();
 const {createUser,userLogin,getUserById,userUpdate,} = require("../controller/userController");
 const { validUser, validUpdate } = require("../validation/validator");
 const {createProduct,getProducts,getProductById,updateProduct, deleteProductById, updateProducts} = require("../controller/productController");
+const {createCart}=require("../controller/cartController")
 const { authentication, authorization } = require("../middleware/auth");
 
 //===================================================================================================================================================
@@ -21,6 +22,10 @@ router.get( "/products/:productId",getProductById)       //Get by Id
 router.put( "/products/:productId",updateProduct)       //update by Id
 
 router.delete("/products/:productId",deleteProductById)  //Delete by Id
+
+// Cart API
+
+router.post("/users/:userId/cart", authentication, authorization, createCart);
 
 
 

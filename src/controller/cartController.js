@@ -1,24 +1,33 @@
-const cartModel=require("../models/cartModel")
+const cartModel = require("../models/cartModel");
 
-const createCart= async function(req,res){
-    try{
-        let data = req.body
-        let userId= req.body.userId
-        let productId= req.body.productId
-         
-        let cart= await cartModel.findOne({_id:productId})
-        if(cart==null){
-            let savedData = await userModel.create(data)
-            res.status(201).send({status:true,msg:"cart has been created", data:savedData})
+const cartDeleted = async function (req, res) {
+  //Empty items
+  try {
+    let emptyArray = [];
+    let cart = await cartModel.findOne({
+      userId: req.params.userId,
+      "items.productId": req.body.productId,
+    });
 
-        }
-
+    if (cart == null || cart.items.length == 0) {
+      return res.status(404).send({ status: false, msg: "Cart Not Found!!" });
     }
-    catch(err){
-        res.status(500).send({status:false, msg:"something went wrong !"})
-    }
-}
+    let deleteItems = await cartModel.findOneAndUpdate(
+      { userId: req.params.userId },
+      { items: emptyArray, totalPrice: 0, totalItems: 0 },
+      { new: true }
+    );
 
+    return res.status(204).send({
+      status: true,
+      data: deleteItems,
+      msg: "Cart deleted Succesfully!!",
+    });
+  } catch (err) {
+    return res
+      .status(500)
+      .send({ status: false, msg: "Server Error !!!", err: err.message });
+  }
+};
 
-
-module.exports={createCart}
+module.exports = { cartDeleted };

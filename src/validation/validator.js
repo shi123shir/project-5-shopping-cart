@@ -1,9 +1,15 @@
 const userModel = require("../models/userModel");
+const mongoose = require("mongoose");
+
+//Global Function
+function isvalidObjectId(ObjectId) {
+  return mongoose.Types.ObjectId.isValid(ObjectId);
+}
 
 const validUser = async function (req, res, next) {
   try {
     let data = req.body;
-   let profileImage = req.files
+    let profileImage = req.files;
     let { fname, lname, email, phone, password, address } = data;
 
     if (Object.keys(data) == 0)
@@ -62,11 +68,17 @@ const validUser = async function (req, res, next) {
 
     //=========================== profile-Image ==================================================================================================================================
 
-    if(profileImage.length==0)
-    return res.status(400).send({status:false, msg:"please input profile_image"})
+    if (profileImage.length == 0)
+      return res
+        .status(400)
+        .send({ status: false, msg: "please input profile_image" });
 
-    if(!/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(profileImage[0].originalname))
-    return res.status(400).send({status:false, msg:"invalid image format"})
+    if (
+      !/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(profileImage[0].originalname)
+    )
+      return res
+        .status(400)
+        .send({ status: false, msg: "invalid image format" });
 
     //=========================== phone ==================================================================================================================================
 
@@ -297,4 +309,19 @@ const validUpdate = async function (req, res, next) {
   next();
 };
 
-module.exports = { validUser, validUpdate };
+//Validation(For deleting Cart)
+const deleteCart = function (req, res, next) {
+  if (!req.body.productId) {
+    return res
+      .status(400)
+      .send({ status: false, msg: "productId is require " });
+  }
+  if (!isvalidObjectId(req.body.productId)) {
+    return res
+      .status(400)
+      .send({ status: false, msg: "productId is Incorrect " });
+  }
+  next();
+};
+
+module.exports = { validUser, validUpdate, deleteCart };

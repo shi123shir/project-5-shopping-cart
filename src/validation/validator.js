@@ -1,5 +1,68 @@
 const userModel = require("../models/userModel");
-const mongoose = require("mongoose");
+// const mongoose = require("mongoose");
+
+const emailRegex=/^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/
+const mobileRegex=/^[6-9]\d{9}$/
+const passRegex=/^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[@$!%?&])[A-Za-z\d@$!%?&]{8,15}$/
+const pincodeRegex=/^[1-9][0-9]{5}$/
+const ImgRegex=/(http)?s?:?(\/\/[^"']*\.(?:png|jpg|jpeg|gif|png|svg))/
+const mongoose = require("mongoose")
+
+function isValidPhoneNumber(data){
+    return mobileRegex.test(data)
+}
+
+function isValidEmail(data){
+    return emailRegex.test(data)
+}
+
+//  to complete 2 purpose
+function isValid(data){
+    if(typeof data == undefined || data == null) return false
+    if(typeof data == "string" && data.trim().length==0) return false
+    return true
+}
+
+function isValidPassword(data){
+    if(passRegex.test(data) && data.length>=8 && data.length<=15) return true
+    return false
+}
+
+function isValidImageUrl(data){
+    return ImgRegex.test(data)
+}
+
+function isValidObject(data){
+    if(Object.prototype.toString.call(data)=="[object Object]" && Object.keys(data).length!=0) return true
+    return false
+} 
+
+function isLetters(data){
+    if(typeof data=="string" && data.trim().length!==0 && /^[a-z A-Z]+$/.test(data)) return true
+    return false
+}
+
+function isValidPincode(data){
+    if(typeof data =="number" && pincodeRegex.test(data)) return true
+    return false
+}
+
+function isValidObjectId (data){
+    return mongoose.Types.ObjectId.isValid(data)
+}
+
+function isValidSize(data){
+    let arr=["S", "XS","M","X", "L","XXL", "XL"]
+    return arr.includes(data)
+}
+
+function makingArray(data){
+    arr=data.trim().split(",").join(" ").split(" ").filter(x=>x.trim().length>0)
+    return arr
+}
+
+
+
 
 //Global Function
 function isvalidObjectId(ObjectId) {
@@ -324,4 +387,19 @@ const deleteCart = function (req, res, next) {
   next();
 };
 
-module.exports = { validUser, validUpdate, deleteCart };
+module.exports = {
+  validUser,
+  validUpdate,
+  deleteCart,  
+  isValid,
+  isValidPhoneNumber,
+  isValidEmail,
+  isValidPassword,
+  isValidImageUrl,
+  isValidObject,
+  isValidPincode,
+  isLetters,
+  isValidObjectId,
+  isValidSize,
+  makingArray
+};

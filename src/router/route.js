@@ -19,7 +19,7 @@ const {
   deleteProductById,
   updateProducts,
 } = require("../controller/productController");
-const { cartDeleted } = require("../controller/cartController");
+const {createCart, cartDeleted } = require("../controller/cartController");
 const { authentication, authorization } = require("../middleware/auth");
 
 //===================================================================================================================================================
@@ -47,7 +47,8 @@ router.delete("/products/:productId", deleteProductById); //Delete by Id
 
 // Cart API
 
-//router.post("/users/:userId/cart", authentication, authorization, createCart);
+router.post("/users/:userId/cart", authentication, authorization, createCart);
+
 router.delete(
   "/users/:userId/cart",
   authentication,

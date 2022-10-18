@@ -51,10 +51,11 @@ const createCart = async function(req,res){
 
           let {items,totalItems,totalPrice}=cart
           let flag = true
+          console.log(cart)
           for(let i=0;i<items.length;i++){
               if(items[i].productId==productId){
                   flag=false
-                  items[i].quantity=items[i].quantity++
+                  items[i].quantity++
               }
           }
           if(flag){

@@ -10,6 +10,7 @@ const {
   validUser,
   validUpdate,
   deleteCart,
+  upOrder,
 } = require("../validation/validator");
 const {
   createProduct,
@@ -19,10 +20,14 @@ const {
   deleteProductById,
   updateProducts,
 } = require("../controller/productController");
-const {createCart, cartDeleted,updateCart } = require("../controller/cartController");
+const {
+  createCart,
+  cartDeleted,
+  updateCart,
+} = require("../controller/cartController");
 const { authentication, authorization } = require("../middleware/auth");
 
-const { createOrder}= require("../controller/orderController")
+const { createOrder, updateOrder } = require("../controller/orderController");
 
 //===================================================================================================================================================
 
@@ -49,7 +54,7 @@ router.delete("/products/:productId", deleteProductById); //Delete by Id
 
 // Cart API
 
-router.post("/users/:userId/cart",authentication,authorization,createCart);
+router.post("/users/:userId/cart", authentication, authorization, createCart);
 
 router.delete(
   "/users/:userId/cart",
@@ -58,11 +63,23 @@ router.delete(
   deleteCart,
   cartDeleted
 );
-router.put("/users/:userId/cart",authentication,authorization,updateCart)
+router.put("/users/:userId/cart", authentication, authorization, updateCart);
 
 // orderapi
 
-router.post("/users/:userId/orders",authentication,authorization,createOrder)
+router.post(
+  "/users/:userId/orders",
+  authentication,
+  authorization,
+  createOrder
+);
+router.put(
+  "/users/:userId/orders",
+  authentication,
+  authorization,
+  upOrder,
+  updateOrder
+);
 
 module.exports = router;
 

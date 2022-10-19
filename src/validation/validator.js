@@ -1,68 +1,81 @@
 const userModel = require("../models/userModel");
 // const mongoose = require("mongoose");
 
-const emailRegex=/^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/
-const mobileRegex=/^[6-9]\d{9}$/
-const passRegex=/^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[@$!%?&])[A-Za-z\d@$!%?&]{8,15}$/
-const pincodeRegex=/^[1-9][0-9]{5}$/
-const ImgRegex=/(http)?s?:?(\/\/[^"']*\.(?:png|jpg|jpeg|gif|png|svg))/
-const mongoose = require("mongoose")
+const emailRegex = /^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/;
+const mobileRegex = /^[6-9]\d{9}$/;
+const passRegex =
+  /^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[@$!%?&])[A-Za-z\d@$!%?&]{8,15}$/;
+const pincodeRegex = /^[1-9][0-9]{5}$/;
+const ImgRegex = /(http)?s?:?(\/\/[^"']*\.(?:png|jpg|jpeg|gif|png|svg))/;
+const mongoose = require("mongoose");
 
-function isValidPhoneNumber(data){
-    return mobileRegex.test(data)
+function isValidPhoneNumber(data) {
+  return mobileRegex.test(data);
 }
 
-function isValidEmail(data){
-    return emailRegex.test(data)
+function isValidEmail(data) {
+  return emailRegex.test(data);
 }
 
 //  to complete 2 purpose
-function isValid(data){
-    if(typeof data == undefined || data == null) return false
-    if(typeof data == "string" && data.trim().length==0) return false
-    return true
+function isValid(data) {
+  if (typeof data == undefined || data == null) return false;
+  if (typeof data == "string" && data.trim().length == 0) return false;
+  return true;
 }
 
-function isValidPassword(data){
-    if(passRegex.test(data) && data.length>=8 && data.length<=15) return true
-    return false
+function isValidPassword(data) {
+  if (passRegex.test(data) && data.length >= 8 && data.length <= 15)
+    return true;
+  return false;
 }
 
-function isValidImageUrl(data){
-    return ImgRegex.test(data)
+function isValidImageUrl(data) {
+  return ImgRegex.test(data);
 }
 
-function isValidObject(data){
-    if(Object.prototype.toString.call(data)=="[object Object]" && Object.keys(data).length!=0) return true
-    return false
-} 
-
-function isLetters(data){
-    if(typeof data=="string" && data.trim().length!==0 && /^[a-z A-Z]+$/.test(data)) return true
-    return false
+function isValidObject(data) {
+  if (
+    Object.prototype.toString.call(data) == "[object Object]" &&
+    Object.keys(data).length != 0
+  )
+    return true;
+  return false;
 }
 
-function isValidPincode(data){
-    if(typeof data =="number" && pincodeRegex.test(data)) return true
-    return false
+function isLetters(data) {
+  if (
+    typeof data == "string" &&
+    data.trim().length !== 0 &&
+    /^[a-z A-Z]+$/.test(data)
+  )
+    return true;
+  return false;
 }
 
-function isValidObjectId (data){
-    return mongoose.Types.ObjectId.isValid(data)
+function isValidPincode(data) {
+  if (typeof data == "number" && pincodeRegex.test(data)) return true;
+  return false;
 }
 
-function isValidSize(data){
-    let arr=["S", "XS","M","X", "L","XXL", "XL"]
-    return arr.includes(data)
+function isValidObjectId(data) {
+  return mongoose.Types.ObjectId.isValid(data);
 }
 
-function makingArray(data){
-    arr=data.trim().split(",").join(" ").split(" ").filter(x=>x.trim().length>0)
-    return arr
+function isValidSize(data) {
+  let arr = ["S", "XS", "M", "X", "L", "XXL", "XL"];
+  return arr.includes(data);
 }
 
-
-
+function makingArray(data) {
+  arr = data
+    .trim()
+    .split(",")
+    .join(" ")
+    .split(" ")
+    .filter((x) => x.trim().length > 0);
+  return arr;
+}
 
 //Global Function
 function isvalidObjectId(ObjectId) {
@@ -387,10 +400,31 @@ const deleteCart = function (req, res, next) {
   next();
 };
 
+//Validator(For UpdateOrder)
+const upOrder = function (req, res, next) {
+  if (!req.body.orderId) {
+    return res.status(400).send({ status: false, msg: "orderId is require " });
+  }
+  if (!isvalidObjectId(req.body.orderId)) {
+    return res
+      .status(400)
+      .send({ status: false, msg: "orderId is Incorrect " });
+  }
+  //
+  let status = ["pending", "completed", "cancelled"].indexOf(req.body.status);
+  if (status == -1) {
+    return res.status(400).send({
+      status: false,
+      msg: "status should be  completed / cancelled ",
+    });
+  }
+  next();
+};
+
 module.exports = {
   validUser,
   validUpdate,
-  deleteCart,  
+  deleteCart,
   isValid,
   isValidPhoneNumber,
   isValidEmail,
@@ -401,5 +435,6 @@ module.exports = {
   isLetters,
   isValidObjectId,
   isValidSize,
-  makingArray
+  makingArray,
+  upOrder,
 };

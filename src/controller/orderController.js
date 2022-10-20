@@ -48,14 +48,21 @@ const createOrder = async function (req, res) {
         .send({ status: false, message: "No Item in Cart" });
 
     // type of status
-
-    if (!isValidStatus)
+      if(status){
+    if (!isValidStatus(status))
       return res.status(400).send({
         status: false,
         message: "status should be on of 'pending','completed','cancelled' ",
       });
-
+    }
     //  cancellable validation
+    if(cancellable){
+      
+      if(typeof cancellable != "boolean")
+      return res
+         .status(400)
+         .send({status:false, message:"canceable  should be true or false"})
+    }
 
     let totalQuantity = 0;
 

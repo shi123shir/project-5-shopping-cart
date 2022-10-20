@@ -127,8 +127,6 @@ const updateCart = async function (req,res){
           return res.status(404).send({status:false, message:"no product find with this product Id"})
       }
 
-      if(!data.removeProduct)return res.status(400).send({status:false, message:"removeProduct is required"})
-
       if(!(/0|1/.test(data.removeProduct)))return res.status(400).send({status:false,message:"removePrduct should be either 0 or 1"})
 
       let proArr = cart.items.filter(x =>

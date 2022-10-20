@@ -183,15 +183,13 @@ const getProducts = async function (req, res) {
       );
     }
 
-    console.log(product);
-
     let findProducts = await productModel.find({ $and: product });
 
     //if no data Found in DB
     if (findProducts.length == 0) {
-      return res.status(200).send({ status: true, msg: "No Match" });
+      return res.status(404).send({ status:false, message: "product not found" });
     }
-    return res.status(200).send({ status: true, data: findProducts });
+    return res.status(200).send({ status: true,message:"Success", data: findProducts });
   } catch (err) {
     return res
       .status(500)
@@ -222,11 +220,11 @@ const getProductById = async function (req, res) {
     });
 
     if (!getSpecificProduct) {
-      return res.status(404).send({ status: false, data: "No product  found" });
+      return res.status(404).send({ status: false, data: "No product found" });
     }
     return res
       .status(200)
-      .send({ status: true, message: "success", data: getSpecificProduct });
+      .send({ status: true, message: "Success", data: getSpecificProduct });
   } catch (error) {
     res.status(500).send({ status: false, err: error.message });
   }
@@ -378,6 +376,7 @@ const updateProduct = async function (req, res) {
         }
       }
     }
+    
     let updatedProduct = await productModel.findByIdAndUpdate(
       { _id: productId },
       {
@@ -388,6 +387,7 @@ const updateProduct = async function (req, res) {
           price: data.price,
           style: data.style,
           isFreeShipping: data.isFreeShipping,
+          installments:data.installments
         },
         $push: { availableSizes: data.availableSizes },
       },
@@ -395,7 +395,7 @@ const updateProduct = async function (req, res) {
     );
     return res.status(200).send({
       status: true,
-      message: "Product updated successfully",
+      message:"Update product details is successful",
       data: updatedProduct,
     });
   } catch (err) {

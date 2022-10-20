@@ -54,7 +54,7 @@ router.delete("/products/:productId", deleteProductById); //Delete by Id
 
 // Cart API
 
-router.post("/users/:userId/cart",  createCart);
+router.post("/users/:userId/cart",authentication, authorization , createCart);
 
 router.delete(
   "/users/:userId/cart",
@@ -63,7 +63,7 @@ router.delete(
   deleteCart,
   cartDeleted
 );
-router.put("/users/:userId/cart",  updateCart);
+router.put("/users/:userId/cart", authentication, authorization ,updateCart);
 
 // orderapi
 

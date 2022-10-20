@@ -22,6 +22,7 @@ const {
 } = require("../controller/productController");
 const {
   createCart,
+  getCart,
   cartDeleted,
   updateCart,
 } = require("../controller/cartController");
@@ -54,7 +55,8 @@ router.delete("/products/:productId", deleteProductById); //Delete by Id
 
 // Cart API
 
-router.post("/users/:userId/cart",authentication, authorization , createCart);
+router.post("/users/:userId/cart", authentication, authorization, createCart);
+router.get("/users/:userId/cart", authentication, authorization, getCart);
 
 router.delete(
   "/users/:userId/cart",
@@ -63,7 +65,7 @@ router.delete(
   deleteCart,
   cartDeleted
 );
-router.put("/users/:userId/cart", authentication, authorization ,updateCart);
+router.put("/users/:userId/cart", authentication, authorization, updateCart);
 
 // orderapi
 

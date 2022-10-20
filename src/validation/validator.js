@@ -91,14 +91,14 @@ const validUser = async function (req, res, next) {
     if (Object.keys(data) == 0)
       return res
         .status(400)
-        .send({ status: false, msg: "please input some data" });
+        .send({ status: false, message: "please input some data" });
 
     //=========================== fname ==================================================================================================================================
 
     if (!fname)
       return res
         .status(400)
-        .send({ status: false, msg: "please input First name" });
+        .send({ status: false, message: "please input First name" });
 
     if (!/^[A-Za-z]{3,10}/.test(fname))
       return res.status(400).send({
@@ -114,7 +114,7 @@ const validUser = async function (req, res, next) {
     if (!lname)
       return res
         .status(400)
-        .send({ status: false, msg: "please input Last name" });
+        .send({ status: false, message: "please input Last name" });
 
     if (!/^[A-Za-z]{3,10}/.test(lname))
       return res.status(400).send({
@@ -127,7 +127,7 @@ const validUser = async function (req, res, next) {
     if (!email)
       return res
         .status(400)
-        .send({ status: false, msg: "please input E-mail" });
+        .send({ status: false, message: "please input E-mail" });
 
     if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email))
       return res
@@ -147,21 +147,21 @@ const validUser = async function (req, res, next) {
     if (profileImage.length == 0)
       return res
         .status(400)
-        .send({ status: false, msg: "please input profile_image" });
+        .send({ status: false, message: "please input profile_image" });
 
     if (
       !/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(profileImage[0].originalname)
     )
       return res
         .status(400)
-        .send({ status: false, msg: "invalid image format" });
+        .send({ status: false, message: "invalid image format" });
 
     //=========================== phone ==================================================================================================================================
 
     if (!phone)
       return res
         .status(400)
-        .send({ status: false, msg: "please input phone Number" });
+        .send({ status: false, message: "please input phone Number" });
 
     let number = req.body.phone;
 
@@ -182,7 +182,7 @@ const validUser = async function (req, res, next) {
     if (!password)
       return res
         .status(400)
-        .send({ status: false, msg: "please input password" });
+        .send({ status: false, message: "please input password" });
 
     if (!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,15}$/.test(password))
       return res.status(400).send({
@@ -196,7 +196,7 @@ const validUser = async function (req, res, next) {
     if (!address)
       return res
         .status(400)
-        .send({ status: false, msg: "please input address" });
+        .send({ status: false, message: "please input address" });
 
     let { shipping, billing } = address;
 
@@ -233,7 +233,9 @@ const validUser = async function (req, res, next) {
       }
 
       if (!/^[1-9][0-9]{5}$/.test(pincode))
-        return res.status(400).send({ status: false, msg: "wrong pincode" });
+        return res
+          .status(400)
+          .send({ status: false, message: "wrong pincode" });
     }
 
     if (billing) {
@@ -270,12 +272,14 @@ const validUser = async function (req, res, next) {
       }
 
       if (!/^[1-9][0-9]{5}$/.test(pincode))
-        return res.status(400).send({ status: false, msg: "wrong pincode" });
+        return res
+          .status(400)
+          .send({ status: false, message: "wrong pincode" });
     }
 
     next();
   } catch (err) {
-    return res.status(500).send({ status: false, msg: err.message });
+    return res.status(500).send({ status: false, message: err.message });
   }
 };
 
@@ -287,7 +291,7 @@ const validUpdate = async function (req, res, next) {
   if (Object.keys(req.body).length == 0) {
     return res
       .status(400)
-      .send({ status: false, msg: "Cant not Update empty Request" });
+      .send({ status: false, message: "Cant not Update empty Request" });
   }
   //valid email or not
   if (email) {
@@ -340,7 +344,9 @@ const validUpdate = async function (req, res, next) {
       }
       //Regex for Pincode
       if (!/^[1-9][0-9]{5}$/.test(pincode)) {
-        return res.status(400).send({ status: false, msg: "wrong pincode" });
+        return res
+          .status(400)
+          .send({ status: false, message: "wrong pincode" });
       }
     } else {
       return res.status(400).send({
@@ -372,7 +378,9 @@ const validUpdate = async function (req, res, next) {
       }
       //Regex for Pincode
       if (!/^[1-9][0-9]{5}$/.test(pincode)) {
-        return res.status(400).send({ status: false, msg: "wrong pincode" });
+        return res
+          .status(400)
+          .send({ status: false, message: "wrong pincode" });
       }
     } else {
       return res.status(400).send({
@@ -384,18 +392,19 @@ const validUpdate = async function (req, res, next) {
 
   next();
 };
+//validation(for Get Cart)
 
 //Validation(For deleting Cart)
 const deleteCart = function (req, res, next) {
   if (!req.body.productId) {
     return res
       .status(400)
-      .send({ status: false, msg: "productId is require " });
+      .send({ status: false, message: "productId is require " });
   }
   if (!isvalidObjectId(req.body.productId)) {
     return res
       .status(400)
-      .send({ status: false, msg: "productId is Incorrect " });
+      .send({ status: false, message: "productId is Incorrect " });
   }
   next();
 };
@@ -403,19 +412,21 @@ const deleteCart = function (req, res, next) {
 //Validator(For UpdateOrder)
 const upOrder = function (req, res, next) {
   if (!req.body.orderId) {
-    return res.status(400).send({ status: false, msg: "orderId is require " });
+    return res
+      .status(400)
+      .send({ status: false, message: "orderId is require " });
   }
   if (!isvalidObjectId(req.body.orderId)) {
     return res
       .status(400)
-      .send({ status: false, msg: "orderId is Incorrect " });
+      .send({ status: false, message: "orderId is Incorrect " });
   }
   //
   let status = ["pending", "completed", "cancelled"].indexOf(req.body.status);
   if (status == -1) {
     return res.status(400).send({
       status: false,
-      msg: "status should be  completed / cancelled ",
+      message: "status should be  completed / cancelled ",
     });
   }
   next();
